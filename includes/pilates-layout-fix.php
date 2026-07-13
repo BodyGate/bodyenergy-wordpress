@@ -68,7 +68,7 @@ function bodyenergy_print_pilates_full_bleed_css()
             max-width: none !important;
             margin: 0 !important;
             padding: 0 !important;
-            overflow-x: hidden !important;
+            overflow-x: clip !important;
             background: #070709 !important;
         }
 
@@ -88,6 +88,7 @@ function bodyenergy_print_pilates_full_bleed_css()
             max-width: none !important;
             margin: 0 !important;
             padding: 0 !important;
+            overflow-x: clip !important;
         }
 
         body.elementor-template-canvas .elementor-element.e-con,
@@ -102,10 +103,11 @@ function bodyenergy_print_pilates_full_bleed_css()
         body.elementor-template-canvas .be-pilates,
         body.page-template-elementor_canvas .be-pilates {
             position: relative;
-            left: 50%;
-            width: 100vw !important;
-            max-width: 100vw !important;
-            margin: 0 0 0 -50vw !important;
+            left: auto;
+            width: 100% !important;
+            max-width: none !important;
+            margin: 0 !important;
+            overflow-x: clip !important;
         }
     </style>
     <?php
