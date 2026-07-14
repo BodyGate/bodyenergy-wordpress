@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Body Energy Integration
  * Description: Plugin base per le integrazioni tra il sito WordPress Body Energy ASD e BodyGate.
- * Version: 0.5.6
+ * Version: 0.5.7
  * Author: Body Energy ASD
  * Text Domain: bodyenergy-wordpress
  */
@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('BODYENERGY_WORDPRESS_VERSION', '0.5.6');
+define('BODYENERGY_WORDPRESS_VERSION', '0.5.7');
 define('BODYENERGY_WORDPRESS_FILE', __FILE__);
 define('BODYENERGY_WORDPRESS_PATH', plugin_dir_path(__FILE__));
 
@@ -22,3 +22,4 @@ require_once BODYENERGY_WORDPRESS_PATH . 'includes/pilates-landing.php';
 require_once BODYENERGY_WORDPRESS_PATH . 'includes/pilates-layout-fix.php';
 require_once BODYENERGY_WORDPRESS_PATH . 'includes/theme-settings-migration.php';
 require_once BODYENERGY_WORDPRESS_PATH . 'includes/home-platinum.php';
+require_once BODYENERGY_WORDPRESS_PATH . 'includes/home-platinum-video-admin.php';
