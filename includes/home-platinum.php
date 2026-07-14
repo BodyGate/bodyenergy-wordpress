@@ -83,6 +83,13 @@ function bodyenergy_home_platinum_enqueue_assets()
         BODYENERGY_WORDPRESS_VERSION
     );
 
+    wp_enqueue_style(
+        'bodyenergy-home-experience',
+        $base_url . 'assets/css/home-experience.css',
+        array('bodyenergy-home-platinum'),
+        BODYENERGY_WORDPRESS_VERSION
+    );
+
     wp_enqueue_script(
         'bodyenergy-home-platinum',
         $base_url . 'assets/js/home-platinum.js',
