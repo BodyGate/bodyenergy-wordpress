@@ -28,10 +28,6 @@
     box-shadow: 0 28px 80px rgba(0, 0, 0, 0.4) !important;
 }
 
-/*
- * Il video deve comportarsi come uno sfondo reale, anche quando WordPress,
- * Elementor o MediaElement.js lo avvolgono in un player con controlli.
- */
 .be-platinum-home-hero-media .elementor-widget-video,
 .be-platinum-home-hero-media .elementor-widget-video > .elementor-widget-container,
 .be-platinum-home-hero-media .elementor-wrapper,
@@ -130,7 +126,8 @@
 }
 
 .be-platinum-home-hero-media__eyebrow,
-.be-platinum-home-hero-media__content {
+.be-platinum-home-hero-media__content,
+.be-platinum-home-hero-media__play {
     position: relative;
     z-index: 2;
 }
@@ -149,6 +146,51 @@
     letter-spacing: 0.16em;
     text-transform: uppercase;
     backdrop-filter: blur(10px);
+}
+
+.be-platinum-home-hero-media__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    min-height: 48px;
+    padding: 10px 18px;
+    transform: translate(-50%, -50%);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 999px;
+    background: rgba(7, 7, 9, 0.84);
+    color: #fff;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    cursor: pointer;
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.34);
+    backdrop-filter: blur(12px);
+}
+
+.be-platinum-home-hero-media__play span {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding-left: 2px;
+    border-radius: 50%;
+    background: #e3262e;
+    color: #fff;
+    font-size: 11px;
+}
+
+.be-platinum-home-hero-media__play:hover,
+.be-platinum-home-hero-media__play:focus-visible {
+    border-color: #ff3b43;
+    outline: none;
+}
+
+.be-platinum-home-hero-media--play-required .be-platinum-home-hero-media__play {
+    display: inline-flex;
 }
 
 .be-platinum-home-hero-media__content {
@@ -243,8 +285,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .be-platinum-home-hero-media__video,
-    .be-platinum-home-hero-media video {
-        display: none !important;
+    .be-platinum-home-hero-media__video {
+        transition: none;
     }
 }
