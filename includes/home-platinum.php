@@ -53,8 +53,54 @@ function bodyenergy_home_platinum_extract_video_url($value)
 }
 
 /**
- * Cerca il video già usato nella Home esistente e, in seconda battuta,
- * seleziona il video più pertinente presente nella Libreria Media.
+ * Converte un allegato video WordPress nei dati necessari all'Hero.
+ *
+ * @param int $attachment_id ID allegato.
+ * @return array{url:string,mime:string,poster:string}|null
+ */
+function bodyenergy_home_platinum_attachment_video_data($attachment_id)
+{
+    $attachment_id = absint($attachment_id);
+
+    if (!$attachment_id || 'attachment' !== get_post_type($attachment_id)) {
+        return null;
+    }
+
+    $url = wp_get_attachment_url($attachment_id);
+
+    if (!is_string($url) || '' === $url) {
+        return null;
+    }
+
+    $mime = (string) get_post_mime_type($attachment_id);
+    $filetype = wp_check_filetype($url);
+    $extension = !empty($filetype['ext']) ? strtolower((string) $filetype['ext']) : '';
+    $allowed_extensions = array('mp4', 'webm', 'ogv', 'ogg', 'mov');
+
+    if (0 !== strpos($mime, 'video/') && !in_array($extension, $allowed_extensions, true)) {
+        return null;
+    }
+
+    $poster = bodyenergy_home_platinum_image_url();
+    $poster_id = (int) get_post_thumbnail_id($attachment_id);
+
+    if ($poster_id) {
+        $poster_url = wp_get_attachment_image_url($poster_id, 'full');
+        if (is_string($poster_url) && '' !== $poster_url) {
+            $poster = $poster_url;
+        }
+    }
+
+    return array(
+        'url' => esc_url_raw($url),
+        'mime' => $mime ?: (!empty($filetype['type']) ? (string) $filetype['type'] : 'video/mp4'),
+        'poster' => $poster,
+    );
+}
+
+/**
+ * Cerca il video scelto dall'amministrazione. Se non è stato scelto,
+ * tenta il rilevamento automatico nei contenuti e nella Libreria Media.
  *
  * @return array{url:string,mime:string,poster:string}
  */
@@ -71,6 +117,13 @@ function bodyenergy_home_platinum_video_data()
         'mime' => '',
         'poster' => bodyenergy_home_platinum_image_url(),
     );
+
+    $selected_attachment_id = absint(get_option('bodyenergy_home_platinum_video_id', 0));
+    $selected_video = bodyenergy_home_platinum_attachment_video_data($selected_attachment_id);
+
+    if (is_array($selected_video)) {
+        return $selected_video;
+    }
 
     $front_page_id = (int) get_option('page_on_front');
     $page_ids = array_values(array_unique(array_filter(array(
@@ -119,11 +172,10 @@ function bodyenergy_home_platinum_video_data()
         }
     }
 
-    $videos = get_posts(array(
+    $attachments = get_posts(array(
         'post_type' => 'attachment',
         'post_status' => 'inherit',
-        'post_mime_type' => 'video',
-        'posts_per_page' => 50,
+        'posts_per_page' => 100,
         'orderby' => 'date',
         'order' => 'DESC',
     ));
@@ -132,23 +184,23 @@ function bodyenergy_home_platinum_video_data()
     $best_score = -1;
     $keywords = array('body', 'energy', 'palestra', 'gym', 'fitness', 'home');
 
-    foreach ($videos as $index => $video) {
-        if (!$video instanceof WP_Post) {
+    foreach ($attachments as $index => $attachment) {
+        if (!$attachment instanceof WP_Post) {
             continue;
         }
 
-        $url = wp_get_attachment_url($video->ID);
-        if (!is_string($url) || '' === $url) {
+        $candidate = bodyenergy_home_platinum_attachment_video_data($attachment->ID);
+        if (!is_array($candidate)) {
             continue;
         }
 
-        $score = max(0, 50 - (int) $index);
+        $score = max(0, 100 - (int) $index);
 
-        if ($front_page_id && (int) $video->post_parent === $front_page_id) {
+        if ($front_page_id && (int) $attachment->post_parent === $front_page_id) {
             $score += 200;
         }
 
-        $haystack = strtolower($video->post_title . ' ' . $video->post_name . ' ' . $url);
+        $haystack = strtolower($attachment->post_title . ' ' . $attachment->post_name . ' ' . $candidate['url']);
         foreach ($keywords as $keyword) {
             if (false !== strpos($haystack, $keyword)) {
                 $score += 25;
@@ -156,25 +208,13 @@ function bodyenergy_home_platinum_video_data()
         }
 
         if ($score > $best_score) {
-            $best_video = $video;
+            $best_video = $candidate;
             $best_score = $score;
         }
     }
 
-    if ($best_video instanceof WP_Post) {
-        $url = wp_get_attachment_url($best_video->ID);
-        $filetype = is_string($url) ? wp_check_filetype($url) : array();
-        $poster_id = (int) get_post_thumbnail_id($best_video->ID);
-
-        $resolved['url'] = is_string($url) ? $url : '';
-        $resolved['mime'] = !empty($filetype['type']) ? (string) $filetype['type'] : 'video/mp4';
-
-        if ($poster_id) {
-            $poster = wp_get_attachment_image_url($poster_id, 'full');
-            if (is_string($poster) && '' !== $poster) {
-                $resolved['poster'] = $poster;
-            }
-        }
+    if (is_array($best_video)) {
+        return $best_video;
     }
 
     return $resolved;
