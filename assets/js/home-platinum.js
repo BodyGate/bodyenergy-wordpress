@@ -81,9 +81,6 @@
         mediaColumn.insertAdjacentHTML(
             'beforeend',
             '<span class="be-platinum-home-hero-media__eyebrow">Body Energy Experience</span>' +
-            '<button class="be-platinum-home-hero-media__play" type="button" aria-label="Avvia il video della palestra">' +
-                '<span aria-hidden="true">▶</span><strong>Avvia video</strong>' +
-            '</button>' +
             '<div class="be-platinum-home-hero-media__content">' +
                 '<span class="be-platinum-home-hero-media__kicker">La palestra</span>' +
                 '<strong class="be-platinum-home-hero-media__title">Spazi reali.<br>Risultati reali.</strong>' +
@@ -92,160 +89,56 @@
         );
     }
 
-    function markReady(mediaColumn) {
-        mediaColumn.classList.add('be-platinum-home-hero-media--video-ready');
-        mediaColumn.setAttribute('data-video-state', 'ready');
-    }
-
-    function markPlaying(mediaColumn) {
-        markReady(mediaColumn);
-        mediaColumn.classList.remove('be-platinum-home-hero-media--play-required');
-        mediaColumn.setAttribute('data-video-state', 'playing');
-    }
-
-    function requirePlay(mediaColumn) {
-        markReady(mediaColumn);
-        mediaColumn.classList.add('be-platinum-home-hero-media--play-required');
-        mediaColumn.setAttribute('data-video-state', 'awaiting-play');
-    }
-
-    function attemptPlayback(video, mediaColumn) {
-        var promise;
-
-        video.muted = true;
-        video.defaultMuted = true;
-        video.volume = 0;
-        video.removeAttribute('controls');
-        video.controls = false;
-
-        try {
-            promise = video.play();
-        } catch (error) {
-            requirePlay(mediaColumn);
-            return;
-        }
-
-        if (promise && typeof promise.then === 'function') {
-            promise.then(function () {
-                markPlaying(mediaColumn);
-            }).catch(function () {
-                requirePlay(mediaColumn);
-            });
-        }
-    }
-
-    function addDirectVideo(mediaColumn) {
-        var video;
-        var playButton;
-        var reducedMotion;
-        var playbackTimer;
-
-        if (!config.videoUrl) {
-            mediaColumn.setAttribute('data-video-state', 'missing-direct-url');
-            return;
-        }
-
-        video = mediaColumn.querySelector('.be-platinum-home-hero-media__video');
-        if (video) {
-            return;
-        }
-
+    function removeLegacyPlayers(mediaColumn) {
         Array.prototype.forEach.call(
-            mediaColumn.querySelectorAll('.mejs-container, .wp-video'),
-            function (legacyPlayer) {
-                legacyPlayer.remove();
+            mediaColumn.querySelectorAll(
+                '.be-platinum-home-hero-media__video, .elementor-widget-video, .wp-video, .mejs-container'
+            ),
+            function (player) {
+                player.remove();
             }
         );
+    }
 
-        video = document.createElement('video');
-        video.className = 'be-platinum-home-hero-media__video';
-        video.src = String(config.videoUrl);
-        video.autoplay = true;
-        video.muted = true;
-        video.defaultMuted = true;
-        video.loop = true;
-        video.playsInline = true;
-        video.preload = 'auto';
-        video.controls = false;
-        video.disablePictureInPicture = true;
-        video.setAttribute('autoplay', '');
-        video.setAttribute('muted', '');
-        video.setAttribute('loop', '');
-        video.setAttribute('playsinline', '');
-        video.setAttribute('webkit-playsinline', '');
-        video.setAttribute('disablepictureinpicture', '');
-        video.setAttribute('aria-hidden', 'true');
-        video.setAttribute('data-source', config.videoSource || 'direct');
-        video.tabIndex = -1;
+    function addVideoPressPlayer(mediaColumn) {
+        var iframe;
 
-        if (config.posterUrl) {
-            video.poster = String(config.posterUrl);
+        if (!config.videoPressUrl) {
+            mediaColumn.setAttribute('data-video-state', 'missing-videopress-url');
+            return;
         }
 
-        video.addEventListener('loadedmetadata', function () {
-            markReady(mediaColumn);
-        });
-
-        video.addEventListener('loadeddata', function () {
-            markReady(mediaColumn);
-        });
-
-        video.addEventListener('canplay', function () {
-            markReady(mediaColumn);
-        });
-
-        video.addEventListener('playing', function () {
-            window.clearTimeout(playbackTimer);
-            markPlaying(mediaColumn);
-        });
-
-        video.addEventListener('timeupdate', function () {
-            if (video.currentTime > 0.15) {
-                markPlaying(mediaColumn);
-            }
-        });
-
-        video.addEventListener('pause', function () {
-            if (!video.ended && document.visibilityState === 'visible') {
-                requirePlay(mediaColumn);
-            }
-        });
-
-        video.addEventListener('error', function () {
-            mediaColumn.classList.remove('be-platinum-home-hero-media--video-ready');
-            mediaColumn.classList.remove('be-platinum-home-hero-media--play-required');
-            mediaColumn.setAttribute('data-video-state', 'direct-video-error');
-        });
-
-        mediaColumn.insertBefore(video, mediaColumn.firstChild);
-        video.load();
-
-        playButton = mediaColumn.querySelector('.be-platinum-home-hero-media__play');
-        if (playButton) {
-            playButton.addEventListener('click', function () {
-                attemptPlayback(video, mediaColumn);
-            });
+        iframe = mediaColumn.querySelector('.be-platinum-home-hero-media__videopress');
+        if (iframe) {
+            return;
         }
 
-        reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        removeLegacyPlayers(mediaColumn);
 
-        if (reducedMotion) {
-            requirePlay(mediaColumn);
-        } else {
-            attemptPlayback(video, mediaColumn);
-        }
+        iframe = document.createElement('iframe');
+        iframe.className = 'be-platinum-home-hero-media__videopress';
+        iframe.src = String(config.videoPressUrl);
+        iframe.title = 'Video della palestra Body Energy ASD Palermo';
+        iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+        iframe.allowFullscreen = true;
+        iframe.loading = 'eager';
+        iframe.referrerPolicy = 'strict-origin-when-cross-origin';
+        iframe.setAttribute('frameborder', '0');
+        iframe.setAttribute('scrolling', 'no');
+        iframe.setAttribute('aria-hidden', 'true');
+        iframe.tabIndex = -1;
 
-        playbackTimer = window.setTimeout(function () {
-            if (video.paused || video.currentTime <= 0.05) {
-                requirePlay(mediaColumn);
-            }
-        }, 3500);
-
-        document.addEventListener('visibilitychange', function () {
-            if (!document.hidden && video.paused && !reducedMotion) {
-                attemptPlayback(video, mediaColumn);
-            }
+        iframe.addEventListener('load', function () {
+            mediaColumn.classList.add('be-platinum-home-hero-media--videopress-ready');
+            mediaColumn.setAttribute('data-video-state', 'videopress-loaded');
         });
+
+        iframe.addEventListener('error', function () {
+            mediaColumn.classList.remove('be-platinum-home-hero-media--videopress-ready');
+            mediaColumn.setAttribute('data-video-state', 'videopress-error');
+        });
+
+        mediaColumn.insertBefore(iframe, mediaColumn.firstChild);
     }
 
     function enhanceHero() {
@@ -284,7 +177,7 @@
         }
 
         addContent(mediaColumn);
-        addDirectVideo(mediaColumn);
+        addVideoPressPlayer(mediaColumn);
 
         return true;
     }
