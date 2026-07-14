@@ -1,0 +1,316 @@
+/* Body Energy Platinum — Sezione 2: esperienza e vantaggi del centro. */
+.be-platinum-experience {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    margin: 0;
+    padding: 116px 28px 124px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background:
+        linear-gradient(180deg, #0b0b0e 0%, #101014 54%, #0b0b0e 100%);
+    color: #f5f5f7;
+}
+
+.be-platinum-experience::before {
+    content: "";
+    position: absolute;
+    z-index: -2;
+    inset: 0;
+    background:
+        radial-gradient(circle at 86% 10%, rgba(227, 38, 46, 0.13), transparent 28%),
+        radial-gradient(circle at 8% 90%, rgba(255, 59, 67, 0.07), transparent 31%);
+    pointer-events: none;
+}
+
+.be-platinum-experience::after {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    top: 0;
+    left: 50%;
+    width: min(1240px, calc(100% - 56px));
+    height: 1px;
+    transform: translateX(-50%);
+    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+    pointer-events: none;
+}
+
+.be-platinum-experience__glow {
+    position: absolute;
+    z-index: -1;
+    top: 74px;
+    right: -110px;
+    width: 320px;
+    height: 320px;
+    border-radius: 50%;
+    background: rgba(227, 38, 46, 0.08);
+    filter: blur(90px);
+    pointer-events: none;
+}
+
+.be-platinum-experience__inner {
+    width: min(1240px, 100%);
+    margin: 0 auto;
+}
+
+.be-platinum-experience__header {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(320px, 0.72fr);
+    align-items: end;
+    gap: clamp(48px, 7vw, 104px);
+    margin-bottom: 58px;
+}
+
+.be-platinum-experience__heading {
+    min-width: 0;
+}
+
+.be-platinum-experience__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 19px;
+    color: #ff3b43;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.2;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+}
+
+.be-platinum-experience__eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(90deg, #e3262e, #ff3b43);
+    box-shadow: 0 0 18px rgba(255, 59, 67, 0.42);
+}
+
+.be-platinum-experience h2 {
+    max-width: 760px;
+    margin: 0;
+    color: #f5f5f7;
+    font-size: clamp(46px, 5.2vw, 72px);
+    font-weight: 800;
+    line-height: 0.98;
+    letter-spacing: -0.052em;
+}
+
+.be-platinum-experience h2 span {
+    color: #a7a7b1;
+}
+
+.be-platinum-experience__header > p {
+    max-width: 510px;
+    margin: 0 0 4px;
+    color: #a9a9b4;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.72;
+}
+
+.be-platinum-experience__grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.be-platinum-experience-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 322px;
+    padding: 25px 24px 23px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 20px;
+    background:
+        linear-gradient(145deg, rgba(24, 24, 29, 0.94), rgba(12, 12, 15, 0.96));
+    box-shadow: 0 20px 46px rgba(0, 0, 0, 0.22);
+    transition:
+        transform 0.28s ease,
+        border-color 0.28s ease,
+        box-shadow 0.28s ease,
+        background 0.28s ease;
+}
+
+.be-platinum-experience-card::before {
+    content: "";
+    position: absolute;
+    top: -72px;
+    right: -72px;
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: rgba(227, 38, 46, 0.06);
+    filter: blur(28px);
+    transition: background 0.28s ease;
+    pointer-events: none;
+}
+
+.be-platinum-experience-card:hover {
+    transform: translateY(-7px);
+    border-color: rgba(255, 59, 67, 0.42);
+    background:
+        linear-gradient(145deg, rgba(28, 28, 34, 0.98), rgba(13, 13, 17, 0.98));
+    box-shadow: 0 28px 58px rgba(0, 0, 0, 0.32);
+}
+
+.be-platinum-experience-card:hover::before {
+    background: rgba(227, 38, 46, 0.13);
+}
+
+.be-platinum-experience-card--comfort {
+    border-color: rgba(255, 59, 67, 0.16);
+}
+
+.be-platinum-experience-card__top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 42px;
+}
+
+.be-platinum-experience-card__icon {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    flex: 0 0 auto;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 14px;
+    background: linear-gradient(145deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.015));
+    color: #ff3b43;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
+}
+
+.be-platinum-experience-card__icon svg {
+    width: 29px;
+    height: 29px;
+}
+
+.be-platinum-experience-card__number {
+    padding-top: 2px;
+    color: #575760;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+}
+
+.be-platinum-experience-card h3 {
+    margin: 0 0 14px;
+    color: #f5f5f7;
+    font-size: 23px;
+    font-weight: 750;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+}
+
+.be-platinum-experience-card p {
+    margin: 0;
+    color: #9696a1;
+    font-size: 14px;
+    line-height: 1.67;
+}
+
+.be-platinum-experience-card__line {
+    width: 34px;
+    height: 2px;
+    margin-top: auto;
+    padding-top: 28px;
+    border-bottom: 2px solid #34343a;
+    transition: width 0.28s ease, border-color 0.28s ease;
+}
+
+.be-platinum-experience-card:hover .be-platinum-experience-card__line {
+    width: 60px;
+    border-color: #e3262e;
+}
+
+@media (max-width: 1100px) {
+    .be-platinum-experience {
+        padding: 96px 24px 102px;
+    }
+
+    .be-platinum-experience__header {
+        grid-template-columns: 1fr;
+        gap: 25px;
+        margin-bottom: 46px;
+    }
+
+    .be-platinum-experience__header > p {
+        max-width: 690px;
+    }
+
+    .be-platinum-experience__grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .be-platinum-experience-card {
+        min-height: 286px;
+    }
+}
+
+@media (max-width: 767px) {
+    .be-platinum-experience {
+        padding: 76px 18px 82px;
+    }
+
+    .be-platinum-experience::after {
+        width: calc(100% - 36px);
+    }
+
+    .be-platinum-experience__header {
+        gap: 21px;
+        margin-bottom: 34px;
+    }
+
+    .be-platinum-experience__eyebrow {
+        margin-bottom: 15px;
+        font-size: 10px;
+        letter-spacing: 0.16em;
+    }
+
+    .be-platinum-experience h2 {
+        font-size: clamp(38px, 12vw, 50px);
+        line-height: 1;
+    }
+
+    .be-platinum-experience__header > p {
+        font-size: 15px;
+        line-height: 1.65;
+    }
+
+    .be-platinum-experience__grid {
+        grid-template-columns: 1fr;
+        gap: 14px;
+    }
+
+    .be-platinum-experience-card {
+        min-height: 250px;
+        padding: 22px 21px 21px;
+        border-radius: 18px;
+    }
+
+    .be-platinum-experience-card__top {
+        margin-bottom: 30px;
+    }
+
+    .be-platinum-experience-card h3 {
+        font-size: 22px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .be-platinum-experience-card,
+    .be-platinum-experience-card::before,
+    .be-platinum-experience-card__line {
+        transition: none;
+    }
+
+    .be-platinum-experience-card:hover {
+        transform: none;
+    }
+}
