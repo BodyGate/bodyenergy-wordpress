@@ -187,7 +187,7 @@
                             '<span class="be-platinum-experience-card__number">02</span>' +
                         '</div>' +
                         '<h3>Pilates Reformer</h3>' +
-                        '<p>Solo quattro postazioni per offrire più spazio, maggiore controllo e attenzione individuale.</p>' +
+                        '<p>Cinque postazioni per offrire più spazio, maggiore controllo e attenzione individuale.</p>' +
                         '<span class="be-platinum-experience-card__line" aria-hidden="true"></span>' +
                     '</article>' +
                     '<article class="be-platinum-experience-card">' +
