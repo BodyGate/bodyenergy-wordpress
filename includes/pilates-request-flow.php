@@ -199,3 +199,25 @@ function bodyenergy_render_pilates_request_styles()
     </style>
     <?php
 }
+
+
+/**
+ * Collega la CTA principale della landing Pilates alla nuova pagina di richiesta.
+ *
+ * @param string $output Output dello shortcode.
+ * @param string $tag    Nome shortcode.
+ * @return string
+ */
+function bodyenergy_link_pilates_landing_to_request($output, $tag)
+{
+    if ('bodyenergy_pilates_landing' !== $tag) {
+        return $output;
+    }
+
+    return str_replace(
+        'href="#be-pilates-contact">Entra nella lista prioritaria</a>',
+        'href="' . esc_url(bodyenergy_pilates_request_page_url()) . '">Richiedi informazioni</a>',
+        $output
+    );
+}
+add_filter('do_shortcode_tag', 'bodyenergy_link_pilates_landing_to_request', 30, 2);
