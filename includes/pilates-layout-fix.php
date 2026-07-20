@@ -1,6 +1,6 @@
 <?php
 /**
- * Integrazione full-viewport delle pagine Pilates con il tema.
+ * Integrazione Platinum delle pagine Pilates con il tema.
  *
  * @package BodyEnergyWordPress
  */
@@ -37,6 +37,16 @@ function bodyenergy_is_pilates_landing_request()
     return false;
 }
 
+function bodyenergy_pilates_body_class($classes)
+{
+    if (bodyenergy_is_pilates_landing_request()) {
+        $classes[] = 'bodyenergy-pilates-page';
+    }
+
+    return $classes;
+}
+add_filter('body_class', 'bodyenergy_pilates_body_class');
+
 function bodyenergy_print_pilates_full_bleed_css()
 {
     if (!bodyenergy_is_pilates_landing_request()) {
@@ -45,10 +55,12 @@ function bodyenergy_print_pilates_full_bleed_css()
     ?>
     <style id="bodyenergy-pilates-full-bleed">
         html,body{max-width:none!important;margin:0!important;padding:0!important;overflow-x:clip!important;background:#070709!important}
-        body .site-content,body #content,body #primary,body main.site-main,body .content-area,body .entry-content,body .page-content,body article.page,body .inside-article,body .wp-site-blocks,body .elementor,body .elementor-section-wrap,body .elementor-element.e-con,body .e-con-inner,body .elementor-widget-shortcode,body .elementor-widget-shortcode>.elementor-widget-container{width:100%!important;max-width:none!important;margin:0!important;padding:0!important;overflow:visible!important}
-        body .entry-header,body .page-header,body .page-hero,body .featured-image,body .post-thumbnail,body .entry-title,body .entry-meta,body .page-header-image,body .header-image-container{display:none!important}
-        body .elementor-element.e-con{--content-width:100%;--padding-top:0;--padding-right:0;--padding-bottom:0;--padding-left:0}
-        body .be-pilates,body .be-request{position:relative!important;left:50%!important;width:100vw!important;max-width:100vw!important;margin-left:-50vw!important;margin-right:-50vw!important;overflow-x:clip!important}
+        body.bodyenergy-pilates-page .site-content,body.bodyenergy-pilates-page #content,body.bodyenergy-pilates-page #primary,body.bodyenergy-pilates-page main.site-main,body.bodyenergy-pilates-page .content-area,body.bodyenergy-pilates-page .entry-content,body.bodyenergy-pilates-page .page-content,body.bodyenergy-pilates-page article.page,body.bodyenergy-pilates-page .inside-article,body.bodyenergy-pilates-page .wp-site-blocks,body.bodyenergy-pilates-page .elementor,body.bodyenergy-pilates-page .elementor-section-wrap,body.bodyenergy-pilates-page .elementor-element.e-con,body.bodyenergy-pilates-page .e-con-inner,body.bodyenergy-pilates-page .elementor-widget-shortcode,body.bodyenergy-pilates-page .elementor-widget-shortcode>.elementor-widget-container{width:100%!important;max-width:none!important;margin:0!important;padding:0!important;overflow:visible!important}
+        body.bodyenergy-pilates-page .entry-header,body.bodyenergy-pilates-page .page-header,body.bodyenergy-pilates-page .page-hero,body.bodyenergy-pilates-page .featured-image,body.bodyenergy-pilates-page .post-thumbnail,body.bodyenergy-pilates-page .entry-title,body.bodyenergy-pilates-page .entry-meta,body.bodyenergy-pilates-page .page-header-image,body.bodyenergy-pilates-page .header-image-container,body.bodyenergy-pilates-page .breadcrumb,body.bodyenergy-pilates-page .breadcrumbs,body.bodyenergy-pilates-page .breadcrumb-area,body.bodyenergy-pilates-page .breadcrumb-section,body.bodyenergy-pilates-page .page-title-area,body.bodyenergy-pilates-page .page-title-section,body.bodyenergy-pilates-page .inner-banner,body.bodyenergy-pilates-page .inner-page-banner,body.bodyenergy-pilates-page .banner-area,body.bodyenergy-pilates-page .sub-banner,body.bodyenergy-pilates-page .elementor-page-title{display:none!important}
+        body.bodyenergy-pilates-page article.page>.post-thumbnail,body.bodyenergy-pilates-page article.page>.entry-header{display:none!important}
+        body.bodyenergy-pilates-page footer,body.bodyenergy-pilates-page #colophon,body.bodyenergy-pilates-page .site-footer,body.bodyenergy-pilates-page .footer-widgets,body.bodyenergy-pilates-page .footer-area,body.bodyenergy-pilates-page .footer-widget-area,body.bodyenergy-pilates-page .edit-link{display:none!important}
+        body.bodyenergy-pilates-page .elementor-element.e-con{--content-width:100%;--padding-top:0;--padding-right:0;--padding-bottom:0;--padding-left:0}
+        body.bodyenergy-pilates-page .be-pilates,body.bodyenergy-pilates-page .be-request{position:relative!important;left:50%!important;width:100vw!important;max-width:100vw!important;margin-left:-50vw!important;margin-right:-50vw!important;overflow-x:clip!important}
     </style>
     <?php
 }
