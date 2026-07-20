@@ -155,6 +155,20 @@ function bodyenergy_render_pilates_landing()
     .be-pilates__final{padding:92px 0}
     @media(max-width:900px){.be-pilates__principles-grid{grid-template-columns:1fr}.be-pilates__hero{min-height:auto}.be-pilates__principles article{min-height:auto}.be-pilates__principles article>span{margin-bottom:28px}}
     @media(max-width:600px){.be-pilates__hero h1{font-size:clamp(47px,13vw,62px)}.be-pilates__hero-art-inner{aspect-ratio:4/4.5}}
+    /* Contrasto CTA: neutralizza gli stili link del tema in ogni stato. */
+    .be-pilates a.be-pilates__button--primary,
+    .be-pilates a.be-pilates__button--primary:link,
+    .be-pilates a.be-pilates__button--primary:visited,
+    .be-pilates a.be-pilates__button--primary:hover,
+    .be-pilates a.be-pilates__button--primary:focus,
+    .be-pilates a.be-pilates__button--primary:active,
+    .be-pilates a.be-pilates__button--primary b,
+    .be-pilates a.be-pilates__button--primary span{
+        color:#fff!important;
+        opacity:1!important;
+        -webkit-text-fill-color:#fff!important;
+    }
+
     </style>
     <?php
     return (string) ob_get_clean();
