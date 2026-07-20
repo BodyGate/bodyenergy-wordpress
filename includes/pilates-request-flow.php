@@ -236,6 +236,22 @@ function bodyenergy_render_pilates_request_styles()
     .be-request__submit p{display:none}
     .be-request__thanks{min-height:680px}
     @media(max-width:920px){.be-request__layout{grid-template-columns:1fr}.be-request__intro h1{max-width:720px}}
+    /* Contrasto CTA del flusso richiesta e della conferma. */
+    .be-request .be-request__submit button,
+    .be-request .be-request__submit button span,
+    .be-request .be-request__submit button b,
+    .be-request .be-request__thanks a,
+    .be-request .be-request__thanks a:link,
+    .be-request .be-request__thanks a:visited,
+    .be-request .be-request__thanks a:hover,
+    .be-request .be-request__thanks a:focus,
+    .be-request .be-request__thanks a:active,
+    .be-request .be-request__thanks a span{
+        color:#fff!important;
+        opacity:1!important;
+        -webkit-text-fill-color:#fff!important;
+    }
+
     </style>
     <?php
 }
