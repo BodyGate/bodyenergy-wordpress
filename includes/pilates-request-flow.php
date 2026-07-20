@@ -177,8 +177,7 @@ function bodyenergy_render_pilates_request_form()
                             </label>
 
                             <div class="be-request__submit">
-                                <button type="button" aria-describedby="be-request-prototype"><span>Invia richiesta</span><b>→</b></button>
-                                <p id="be-request-prototype">Anteprima grafica · nessun dato viene inviato o salvato.</p>
+                                <button type="button"><span>Invia richiesta</span><b>→</b></button>
                             </div>
                         </form>
                     </section>
