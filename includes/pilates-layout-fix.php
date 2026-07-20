@@ -85,14 +85,14 @@ function bodyenergy_remove_pilates_theme_banner()
     ?>
     <script id="bodyenergy-pilates-banner-cleanup">
     document.addEventListener('DOMContentLoaded',function(){
-        var content=document.querySelector('.be-request');
+        var content=document.querySelector('.be-request,.be-pilates');
         if(!content){return;}
         var titles=document.querySelectorAll('h1,h2');
         titles.forEach(function(title){
             var text=(title.textContent||'').replace(/\\s+/g,' ').trim().toLowerCase();
-            if(text!=='richiesta pilates reformer'&&text!=='grazie'){return;}
+            if(text!=='pilates reformer'&&text!=='richiesta pilates reformer'&&text!=='grazie'){return;}
             var block=title;
-            while(block.parentElement&&block.parentElement!==document.body&&!block.parentElement.querySelector('.be-request')){
+            while(block.parentElement&&block.parentElement!==document.body&&!block.parentElement.querySelector('.be-request,.be-pilates')){
                 block=block.parentElement;
             }
             if(!block.contains(content)&&!block.querySelector('header.site-header,nav')){
