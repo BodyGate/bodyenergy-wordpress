@@ -47,7 +47,7 @@ function bodyenergy_site_blueprint()
             'slug' => 'pilates-reformer-palermo',
             'aliases' => array('pilates-reformer-palermo', 'pilates-reformer'),
             'eyebrow' => 'CINQUE POSTAZIONI · PALERMO',
-            'description' => 'La pagina dedicata al Pilates Reformer con cinque postazioni, piccoli gruppi, lista prioritaria, prova gratuita e futura gestione BodyGate.',
+            'description' => 'La pagina dedicata al Pilates Reformer con cinque postazioni, piccoli gruppi e richiesta informazioni.',
             'content' => '[bodyenergy_pilates_landing]',
         ),
         'formule' => array(
