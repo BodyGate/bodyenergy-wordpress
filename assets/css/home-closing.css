@@ -1,0 +1,275 @@
+/* Body Energy Platinum — chiusura editoriale della nuova Home. */
+.be-platinum-home-close {
+    position: relative;
+    isolation: isolate;
+    overflow: hidden;
+    padding: 112px 28px 34px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    background:
+        radial-gradient(circle at 88% 18%, rgba(227, 38, 46, 0.17), transparent 31%),
+        linear-gradient(145deg, rgba(227, 38, 46, 0.055), transparent 42%),
+        #08080a;
+    color: #f5f5f7;
+}
+
+.be-platinum-home-close::before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    opacity: 0.18;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.035) 1px, transparent 1px);
+    background-size: 64px 64px;
+    mask-image: linear-gradient(to bottom, #000, transparent 92%);
+    pointer-events: none;
+}
+
+.be-platinum-home-close__inner,
+.be-platinum-home-close__footer {
+    width: min(1240px, 100%);
+    margin: 0 auto;
+}
+
+.be-platinum-home-close__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.08fr) minmax(340px, 0.72fr);
+    gap: clamp(52px, 8vw, 112px);
+    align-items: center;
+}
+
+.be-platinum-home-close__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    color: #ff3b43;
+    font-size: 11px;
+    font-weight: 850;
+    line-height: 1.2;
+    letter-spacing: 0.19em;
+    text-transform: uppercase;
+}
+
+.be-platinum-home-close__eyebrow::before {
+    content: "";
+    width: 28px;
+    height: 1px;
+    background: linear-gradient(90deg, #e3262e, #ff3b43);
+    box-shadow: 0 0 18px rgba(255, 59, 67, 0.42);
+}
+
+.be-platinum-home-close h2 {
+    max-width: 760px;
+    margin: 0;
+    color: #f7f7f8;
+    font-size: clamp(50px, 5.5vw, 78px);
+    font-weight: 850;
+    line-height: 0.96;
+    letter-spacing: -0.058em;
+}
+
+.be-platinum-home-close h2 span {
+    color: #a7a7b1;
+}
+
+.be-platinum-home-close__lead {
+    max-width: 690px;
+    margin: 28px 0 0;
+    color: #aaaab4;
+    font-size: 17px;
+    line-height: 1.72;
+}
+
+.be-platinum-home-close__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 34px;
+}
+
+.be-platinum-home-close__button {
+    display: inline-flex;
+    min-height: 56px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 24px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 10px;
+    color: #fff !important;
+    font-size: 13px;
+    font-weight: 850;
+    line-height: 1;
+    text-decoration: none !important;
+    transition: transform 0.24s ease, border-color 0.24s ease, background 0.24s ease;
+}
+
+.be-platinum-home-close__button--primary {
+    border-color: #e3262e;
+    background: #e3262e;
+    box-shadow: 0 18px 42px rgba(227, 38, 46, 0.23);
+}
+
+.be-platinum-home-close__button--secondary {
+    background: rgba(255, 255, 255, 0.025);
+}
+
+.be-platinum-home-close__button:hover,
+.be-platinum-home-close__button:focus-visible {
+    transform: translateY(-3px);
+    border-color: #ff3b43;
+}
+
+.be-platinum-home-close__card {
+    position: relative;
+    min-height: 360px;
+    padding: 36px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.11);
+    border-radius: 24px;
+    background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.055), transparent 45%),
+        rgba(15, 15, 19, 0.94);
+    box-shadow: 0 32px 86px rgba(0, 0, 0, 0.34);
+}
+
+.be-platinum-home-close__card::after {
+    content: "BE";
+    position: absolute;
+    right: 18px;
+    bottom: -26px;
+    color: rgba(255, 255, 255, 0.035);
+    font-size: 148px;
+    font-weight: 900;
+    line-height: 1;
+    letter-spacing: -0.08em;
+}
+
+.be-platinum-home-close__card small,
+.be-platinum-home-close__card strong,
+.be-platinum-home-close__card p,
+.be-platinum-home-close__card a {
+    position: relative;
+    z-index: 1;
+}
+
+.be-platinum-home-close__card small {
+    display: block;
+    color: #ff3b43;
+    font-size: 10px;
+    font-weight: 850;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+}
+
+.be-platinum-home-close__card strong {
+    display: block;
+    max-width: 420px;
+    margin: 48px 0 20px;
+    color: #fff;
+    font-size: clamp(30px, 3vw, 42px);
+    line-height: 1.02;
+    letter-spacing: -0.045em;
+}
+
+.be-platinum-home-close__card p {
+    max-width: 410px;
+    margin: 0;
+    color: #aaaab4;
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+.be-platinum-home-close__card a {
+    display: inline-flex;
+    gap: 22px;
+    margin-top: 34px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.22);
+    color: #fff !important;
+    font-size: 12px;
+    font-weight: 850;
+    text-decoration: none !important;
+}
+
+.be-platinum-home-close__card a b {
+    color: #ff3b43;
+}
+
+.be-platinum-home-close__footer {
+    display: flex;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 94px;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    color: #74747e;
+    font-size: 11px;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+}
+
+@media (max-width: 960px) {
+    .be-platinum-home-close {
+        padding: 92px 24px 32px;
+    }
+
+    .be-platinum-home-close__inner {
+        grid-template-columns: 1fr;
+    }
+
+    .be-platinum-home-close__card {
+        min-height: 320px;
+    }
+}
+
+@media (max-width: 620px) {
+    .be-platinum-home-close {
+        padding: 76px 18px 28px;
+    }
+
+    .be-platinum-home-close h2 {
+        font-size: clamp(42px, 13vw, 58px);
+        line-height: 0.98;
+    }
+
+    .be-platinum-home-close__lead {
+        font-size: 15px;
+    }
+
+    .be-platinum-home-close__actions {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .be-platinum-home-close__button {
+        width: 100%;
+    }
+
+    .be-platinum-home-close__card {
+        min-height: 300px;
+        padding: 27px 24px;
+        border-radius: 20px;
+    }
+
+    .be-platinum-home-close__card strong {
+        margin-top: 38px;
+    }
+
+    .be-platinum-home-close__footer {
+        flex-direction: column;
+        margin-top: 70px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .be-platinum-home-close__button {
+        transition: none;
+    }
+
+    .be-platinum-home-close__button:hover,
+    .be-platinum-home-close__button:focus-visible {
+        transform: none;
+    }
+}
