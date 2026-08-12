@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
 }
 
 define('BODYENERGY_WORDPRESS_VERSION', '0.11.3');
-define('BODYENERERGY_WORDPRESS_FILE', __FILE__);
+define('BODYENERGY_WORDPRESS_FILE', __FILE__);
 define('BODYENERGY_WORDPRESS_PATH', plugin_dir_path(__FILE__));
 
 require_once BODYENERGY_WORDPRESS_PATH . 'includes/control-center.php';
