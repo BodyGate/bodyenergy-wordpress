@@ -14,7 +14,7 @@ if (!defined('ABSPATH')) {
 
 function bodyenergy_services_page_version()
 {
-    return '1.0.0';
+    return '1.1.0';
 }
 
 function bodyenergy_bootstrap_services_page()
@@ -36,7 +36,7 @@ function bodyenergy_bootstrap_services_page()
         'post_title' => 'Servizi',
         'post_name' => 'servizi',
         'post_content' => '[bodyenergy_services_landing]',
-        'post_excerpt' => 'Fitness, bodybuilding, powerlifting, corsi fitness di gruppo e Pilates Reformer presso Body Energy ASD Palermo.',
+        'post_excerpt' => 'Fitness, bodybuilding, corsi fitness di gruppo e Pilates Reformer presso Body Energy ASD Palermo.',
         'comment_status' => 'closed',
         'ping_status' => 'closed',
     );
@@ -113,18 +113,12 @@ function bodyenergy_render_services_landing()
         ),
         array(
             'number' => '03',
-            'title' => 'Powerlifting',
-            'label' => 'PRESTAZIONE E TECNICA',
-            'copy' => 'Allenamento dedicato ai fondamentali di forza, con attenzione alla tecnica, alla progressione e alla qualità dell’esecuzione.',
-        ),
-        array(
-            'number' => '04',
             'title' => 'Corsi fitness',
             'label' => 'ATTIVITÀ DI GRUPPO',
             'copy' => 'Corsi fitness di gruppo pensati per allenarsi in un contesto dinamico, seguito e coinvolgente. Programmazione e disponibilità vengono comunicate dalla reception.',
         ),
         array(
-            'number' => '05',
+            'number' => '04',
             'title' => 'Pilates Reformer',
             'label' => 'CINQUE POSTAZIONI',
             'copy' => 'Lezioni su Reformer in piccoli gruppi, con cinque postazioni e un lavoro attento, preciso e personalizzato.',
@@ -144,7 +138,7 @@ function bodyenergy_render_services_landing()
                     <h1>Il tuo modo<br>di <span>allenarti.</span></h1>
                 </div>
                 <div class="be-services__hero-copy">
-                    <p>Body Energy riunisce attività diverse in un unico centro, con ambienti curati e una proposta concreta: fitness, bodybuilding, powerlifting, corsi fitness di gruppo e Pilates Reformer.</p>
+                    <p>Body Energy riunisce attività diverse in un unico centro, con ambienti curati e una proposta concreta: fitness, bodybuilding, corsi fitness di gruppo e Pilates Reformer.</p>
                     <a class="be-services__button" href="<?php echo esc_url($contacts_url); ?>">Richiedi informazioni <b>→</b></a>
                 </div>
             </div>
