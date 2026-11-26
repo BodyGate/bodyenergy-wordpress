@@ -11,13 +11,69 @@ if (!defined('ABSPATH')) {
 
 function bodyenergy_pilates_request_flow_version()
 {
-    return '1.3.0';
+    return '1.4.0';
 }
 
+/**
+ * Public contact route while the prototype form is not authorised.
+ * Use the same reception email already configured on Contatti as fallback.
+ */
 function bodyenergy_pilates_request_page_url()
 {
-    return home_url('/pilates-reformer-palermo/richiesta/');
+    $contacts = get_page_by_path('contatti', OBJECT, 'page');
+    if ($contacts instanceof WP_Post && 'publish' === get_post_status($contacts)) {
+        $url = get_permalink($contacts);
+        if (is_string($url) && '' !== $url) {
+            return $url;
+        }
+    }
+
+    return 'mailto:bodyenergy.asd@gmail.com';
 }
+
+/** Preview-only: the prototype does not collect or submit data. */
+function bodyenergy_pilates_can_preview_request()
+{
+    $page_id = (int) get_queried_object_id();
+    return $page_id > 0 && is_user_logged_in() && current_user_can('edit_post', $page_id);
+}
+
+/** Never display a public request/thanks prototype as a functional form. */
+function bodyenergy_pilates_prototype_fallback()
+{
+    return '<p>Per informazioni sul Pilates Reformer, <a href="' . esc_url(bodyenergy_pilates_request_page_url()) . '">contatta Body Energy</a>.</p>';
+}
+
+/** Protect the frontend, including an accidentally published prototype. */
+function bodyenergy_pilates_protect_request_pages()
+{
+    if (!is_singular('page') || bodyenergy_pilates_can_preview_request()) {
+        return;
+    }
+    $post = get_post(get_queried_object_id());
+    if (!($post instanceof WP_Post)) {
+        return;
+    }
+    $parent = $post->post_parent ? get_post($post->post_parent) : null;
+    $is_prototype = has_shortcode((string) $post->post_content, 'bodyenergy_pilates_request_form')
+        || has_shortcode((string) $post->post_content, 'bodyenergy_pilates_request_thanks')
+        || ($parent instanceof WP_Post
+            && in_array($parent->post_name, array('pilates-reformer-palermo', 'pilates-reformer'), true)
+            && in_array($post->post_name, array('richiesta', 'grazie'), true));
+    if (!$is_prototype) {
+        return;
+    }
+    $target = bodyenergy_pilates_request_page_url();
+    if (0 === strpos($target, 'mailto:')) {
+        $landing = get_page_by_path('pilates-reformer-palermo', OBJECT, 'page');
+        $target = $landing instanceof WP_Post && 'publish' === get_post_status($landing)
+            ? get_permalink($landing) : home_url('/');
+    }
+    nocache_headers();
+    wp_safe_redirect($target, 302);
+    exit;
+}
+add_action('template_redirect', 'bodyenergy_pilates_protect_request_pages', 0);
 
 function bodyenergy_pilates_request_flow_pages()
 {
@@ -43,6 +99,10 @@ function bodyenergy_bootstrap_pilates_request_flow()
         return;
     }
 
+    if (bodyenergy_pilates_request_flow_version() === get_option('bodyenergy_pilates_request_flow_version')) {
+        return;
+    }
+
     $parent = get_page_by_path('pilates-reformer-palermo', OBJECT, 'page');
     if (!($parent instanceof WP_Post)) {
         return;
@@ -53,13 +113,7 @@ function bodyenergy_bootstrap_pilates_request_flow()
         $existing = get_page_by_path('pilates-reformer-palermo/' . $spec['slug'], OBJECT, 'page');
 
         if ($existing instanceof WP_Post) {
-            wp_update_post(array(
-                'ID' => (int) $existing->ID,
-                'post_status' => 'draft',
-                'post_parent' => (int) $parent->ID,
-                'post_content' => $spec['content'],
-                'post_excerpt' => $spec['excerpt'],
-            ));
+            // Existing pages belong to the CMS: preserve status and editorial content.
             $ids[$key] = (int) $existing->ID;
             continue;
         }
@@ -76,9 +130,14 @@ function bodyenergy_bootstrap_pilates_request_flow()
             'ping_status' => 'closed',
         ), true);
 
-        if (!is_wp_error($page_id)) {
+        if (!is_wp_error($page_id) && (int) $page_id > 0) {
             $ids[$key] = (int) $page_id;
         }
+    }
+
+    // Retry an incomplete migration on a later admin request.
+    if (count($ids) !== count(bodyenergy_pilates_request_flow_pages())) {
+        return;
     }
 
     update_option('bodyenergy_pilates_request_flow_state', array('pages' => $ids), false);
@@ -88,6 +147,9 @@ add_action('admin_init', 'bodyenergy_bootstrap_pilates_request_flow', 45);
 
 function bodyenergy_render_pilates_request_form()
 {
+    if (!bodyenergy_pilates_can_preview_request()) {
+        return bodyenergy_pilates_prototype_fallback();
+    }
     ob_start();
     ?>
     <main class="be-request">
@@ -124,6 +186,7 @@ function bodyenergy_render_pilates_request_form()
                             <div><small>LA TUA RICHIESTA</small><h2>Come possiamo aiutarti?</h2></div>
                         </div>
 
+                        <p role="status">Anteprima riservata: il modulo non è attivo. Non inserire dati personali.</p>
                         <form class="be-request__form" onsubmit="return false;">
                             <div class="be-request__intent" role="radiogroup" aria-label="Tipo di richiesta">
                                 <label>
@@ -177,7 +240,7 @@ function bodyenergy_render_pilates_request_form()
                             </label>
 
                             <div class="be-request__submit">
-                                <button type="button"><span>Invia richiesta</span><b>→</b></button>
+                                <button type="button" disabled><span>Invio non attivo</span><b>→</b></button>
                             </div>
                         </form>
                     </section>
@@ -193,6 +256,9 @@ add_shortcode('bodyenergy_pilates_request_form', 'bodyenergy_render_pilates_requ
 
 function bodyenergy_render_pilates_request_thanks()
 {
+    if (!bodyenergy_pilates_can_preview_request()) {
+        return bodyenergy_pilates_prototype_fallback();
+    }
     ob_start();
     ?>
     <main class="be-request be-request--thanks">
