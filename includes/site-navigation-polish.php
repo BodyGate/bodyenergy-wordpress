@@ -48,6 +48,7 @@ function bodyenergy_navigation_routes()
         ),
         'pilates-request' => array(
             'label' => 'Richiesta Pilates Reformer',
+            'preview_only' => true,
             'labels' => array(),
             'paths' => array(
                 '/pilates-reformer/richiesta/',
@@ -60,6 +61,7 @@ function bodyenergy_navigation_routes()
         ),
         'pilates-thanks' => array(
             'label' => 'Grazie Pilates Reformer',
+            'preview_only' => true,
             'labels' => array(),
             'paths' => array(
                 '/pilates-reformer/grazie/',
@@ -171,7 +173,7 @@ function bodyenergy_navigation_resolve_route($route)
     }
 
     $status = (string) get_post_status($page);
-    if ('publish' === $status) {
+    if ('publish' === $status && empty($route['preview_only'])) {
         return array(
             'url' => (string) get_permalink($page),
             'visible' => true,
@@ -231,8 +233,24 @@ function bodyenergy_navigation_resolved_routes()
  */
 function bodyenergy_navigation_match_route($label, $url, $routes)
 {
+    // Match ordinary same-site paths only. Preserve external URLs, anchors,
+    // query parameters and signed preview URLs as supplied by their owner.
+    $raw = trim((string) $url);
+    if ('' === $raw || '#' === $raw) {
+        $normalized_path = '';
+    } else {
+        $parts = wp_parse_url($raw);
+        $home = wp_parse_url(home_url('/'));
+        if (!is_array($parts) || !is_array($home)
+            || isset($parts['query']) || isset($parts['fragment'])
+            || (isset($parts['scheme']) && !in_array(strtolower($parts['scheme']), array('http', 'https'), true))
+            || (isset($parts['host']) && strtolower($parts['host']) !== strtolower($home['host']))
+            || (isset($parts['port']) && (!isset($home['port']) || $parts['port'] !== $home['port']))) {
+            return '';
+        }
+        $normalized_path = bodyenergy_navigation_normalize_path($raw);
+    }
     $normalized_label = bodyenergy_navigation_normalize_text($label);
-    $normalized_path = bodyenergy_navigation_normalize_path($url);
 
     foreach ($routes as $key => $route) {
         foreach ((array) $route['paths'] as $path) {
@@ -375,11 +393,14 @@ function bodyenergy_print_navigation_polish()
         var byPath=<?php echo wp_json_encode($by_path, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES); ?>;
         var normalizeText=function(value){return String(value||'').replace(/\s+/g,' ').trim().toLowerCase();};
         var normalizePath=function(value){
+            var raw=String(value||'').trim();
+            if(!raw||raw==='#'){return '';}
             try{
-                var url=new URL(String(value||''),window.location.origin);
+                var url=new URL(raw,window.location.origin);
+                if(url.origin!==window.location.origin||url.search||url.hash||raw.indexOf('#')!==-1||raw.indexOf('?')!==-1){return null;}
                 var path='/' + String(url.pathname||'/').replace(/^\/+|\/+$/g,'');
                 return path==='/'?'/':path+'/';
-            }catch(error){return '';}
+            }catch(error){return null;}
         };
         var hideElement=function(element){
             var wrapper=element.closest('li,.menu-item,.elementor-button-wrapper');
@@ -387,9 +408,13 @@ function bodyenergy_print_navigation_polish()
             (wrapper||element).setAttribute('aria-hidden','true');
         };
 
-        document.querySelectorAll('a,button').forEach(function(element){
+        // Theme/Elementor fallback is limited to navigation links, never
+        // arbitrary buttons, body CTAs, external contact links or admin bar.
+        document.querySelectorAll('header a,nav a,[role="navigation"] a,.elementor-location-header a').forEach(function(element){
+            if(element.closest('#wpadminbar,main,.be-request,.be-pilates,.be-gym,.be-contact,.be-services')){return;}
             var text=normalizeText(element.textContent);
-            var path=element.tagName==='A'?normalizePath(element.getAttribute('href')):'';
+            var path=normalizePath(element.getAttribute('href'));
+            if(path===null){return;}
             var target=(path&&byPath[path])||byText[text];
             if(!target){return;}
 
