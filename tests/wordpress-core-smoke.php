@@ -1,11 +1,10 @@
 <?php
 /** Run only by WP-CLI in a disposable WordPress install. */
 if (!defined('WP_CLI') || !WP_CLI || !defined('BE_DISPOSABLE_QA') || !BE_DISPOSABLE_QA) { exit(1); }
-$passed = 0;
+$GLOBALS['be_qa_passed'] = 0;
 function be_qa($label, $condition) {
-    global $passed;
     if (!$condition) { WP_CLI::error($label); }
-    ++$passed;
+    ++$GLOBALS['be_qa_passed'];
     WP_CLI::log('PASS: ' . $label);
 }
 function be_qa_page($slug, $status = 'publish') {
@@ -29,4 +28,4 @@ be_qa('unrelated page remains public', get_post_status($contacts) === 'publish')
 be_qa('Pilates uses real public contact permalink', bodyenergy_pilates_request_page_url() === get_permalink($contacts));
 be_qa('anonymous Pilates shortcode has no form', !str_contains(do_shortcode('[bodyenergy_pilates_request_form]'), '<form'));
 be_qa('default video GUID remains available', bodyenergy_home_platinum_videopress_guid() === 'gUAnLMKw');
-WP_CLI::success($passed . ' real WordPress core checks passed.');
+WP_CLI::success($GLOBALS['be_qa_passed'] . ' real WordPress core checks passed.');
