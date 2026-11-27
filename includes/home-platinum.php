@@ -11,11 +11,52 @@ if (!defined('ABSPATH')) {
 }
 
 /**
- * GUID VideoPress ricavato dall'URL originale fornito dal proprietario.
+ * Recognise only the HTTPS VideoPress URL formats used by the existing site.
+ * Do not guess a GUID from an unrelated host, file name or untrusted metadata.
  */
+function bodyenergy_home_platinum_guid_from_url($url)
+{
+    $parts = wp_parse_url((string) $url);
+    if (!is_array($parts) || 'https' !== strtolower($parts['scheme'] ?? '')
+        || isset($parts['user']) || isset($parts['pass']) || isset($parts['port'])) {
+        return '';
+    }
+    $host = strtolower($parts['host'] ?? '');
+    $path = $parts['path'] ?? '';
+    if ('videos.files.wordpress.com' === $host && preg_match('~^/([A-Za-z0-9]{8})/[^/]+$~D', $path, $matches)) {
+        return $matches[1];
+    }
+    if ('videopress.com' === $host && preg_match('~^/v/([A-Za-z0-9]{8})/?$~D', $path, $matches)) {
+        return $matches[1];
+    }
+    return '';
+}
+
+/** Validate a WordPress video attachment for the existing VideoPress player. */
+function bodyenergy_home_platinum_attachment_video_data($attachment_id)
+{
+    $attachment_id = absint($attachment_id);
+    $post = $attachment_id ? get_post($attachment_id) : null;
+    if (!($post instanceof WP_Post) || 'attachment' !== $post->post_type
+        || 'trash' === $post->post_status || 0 !== strpos((string) get_post_mime_type($post), 'video/')) {
+        return null;
+    }
+    $url = wp_get_attachment_url($attachment_id);
+    if (!is_string($url) || '' === $url) {
+        return null;
+    }
+    $guid = bodyenergy_home_platinum_guid_from_url($url);
+    if ('' === $guid) {
+        return null;
+    }
+    return array('id' => $attachment_id, 'url' => $url, 'guid' => $guid);
+}
+
+/** Use the saved selection when compatible; otherwise retain the approved video. */
 function bodyenergy_home_platinum_videopress_guid()
 {
-    return 'gUAnLMKw';
+    $video = bodyenergy_home_platinum_attachment_video_data(get_option('bodyenergy_home_platinum_video_id', 0));
+    return is_array($video) ? $video['guid'] : 'gUAnLMKw';
 }
 
 /**

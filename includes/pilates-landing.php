@@ -13,7 +13,7 @@ function bodyenergy_render_pilates_landing()
 {
     $request_url = function_exists('bodyenergy_pilates_request_page_url')
         ? bodyenergy_pilates_request_page_url()
-        : home_url('/pilates-reformer-palermo/richiesta/');
+        : 'mailto:bodyenergy.asd@gmail.com';
 
     ob_start();
     ?>
@@ -108,9 +108,9 @@ function bodyenergy_render_pilates_landing()
                     <h2>Da qui, pensiamo noi al prossimo passo.</h2>
                 </div>
                 <div class="be-pilates__process-grid">
-                    <article><span>01</span><h3>Lascia la richiesta</h3><p>Inserisci le informazioni essenziali nel modulo dedicato.</p></article>
-                    <article><span>02</span><h3>Scegli il contatto</h3><p>Indica se preferisci una chiamata oppure WhatsApp.</p></article>
-                    <article><span>03</span><h3>Parla con noi</h3><p>Il team Body Energy ti ricontatterà nella fascia indicata.</p></article>
+                    <article><span>01</span><h3>Contatta la reception</h3><p>Chiedi informazioni sul Pilates Reformer attraverso i nostri contatti.</p></article>
+                    <article><span>02</span><h3>Conosci il percorso</h3><p>Scopri come si svolgono le lezioni e chiedi quali orari sono disponibili.</p></article>
+                    <article><span>03</span><h3>Parla con noi</h3><p>Confrontati con il team Body Energy sulle tue esigenze.</p></article>
                 </div>
             </div>
         </section>
@@ -122,7 +122,7 @@ function bodyenergy_render_pilates_landing()
                     <h2>Cinque postazioni.<br><span>Un’esperienza più personale.</span></h2>
                 </div>
                 <div>
-                    <p>Raccontaci cosa stai cercando. Ti ricontatteremo nel modo che preferisci.</p>
+                    <p>Raccontaci cosa stai cercando. Contatta la reception per informazioni e disponibilità.</p>
                     <a class="be-pilates__button be-pilates__button--primary" href="<?php echo esc_url($request_url); ?>">Richiedi informazioni <b>→</b></a>
                 </div>
             </div>

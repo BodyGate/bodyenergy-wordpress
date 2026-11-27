@@ -33,6 +33,30 @@ function bodyenergy_memberships_private_pages()
 }
 
 /**
+ * Le pagine riservate non possono essere pubblicate o programmate.
+ * Non modifica articoli, prodotti, pagine con altri slug o contenuti esistenti.
+ */
+function bodyenergy_memberships_force_draft_on_save($data, $postarr)
+{
+    if ('page' !== ($data['post_type'] ?? '') || !in_array($data['post_status'] ?? '', array('publish', 'future'), true)) {
+        return $data;
+    }
+
+    $slug = isset($data['post_name']) ? wp_unslash($data['post_name']) : '';
+    if ('' === $slug && isset($data['post_title'])) {
+        $slug = sanitize_title(wp_unslash($data['post_title']));
+    }
+    $existing = !empty($postarr['ID']) ? get_post((int) $postarr['ID']) : null;
+    if (in_array($slug, array('abbonamenti', 'formule'), true)
+        || ($existing instanceof WP_Post && 'page' === $existing->post_type
+            && in_array($existing->post_name, array('abbonamenti', 'formule'), true))) {
+        $data['post_status'] = 'draft';
+    }
+    return $data;
+}
+add_filter('wp_insert_post_data', 'bodyenergy_memberships_force_draft_on_save', 99, 2);
+
+/**
  * Mantiene le pagine formule/abbonamenti non pubbliche senza cancellarle.
  */
 function bodyenergy_keep_memberships_private()
@@ -42,7 +66,7 @@ function bodyenergy_keep_memberships_private()
     }
 
     foreach (bodyenergy_memberships_private_pages() as $page) {
-        if ('publish' !== get_post_status($page)) {
+        if (!in_array(get_post_status($page), array('publish', 'future'), true)) {
             continue;
         }
 
@@ -53,6 +77,99 @@ function bodyenergy_keep_memberships_private()
     }
 }
 add_action('admin_init', 'bodyenergy_keep_memberships_private', 80);
+
+/**
+ * Difesa per pubblicazioni programmate pregresse (wp_publish_post può
+ * bypassare wp_insert_post_data). Il passaggio a draft non ricorre.
+ */
+function bodyenergy_memberships_prevent_scheduled_publish($new_status, $old_status, $post)
+{
+    if ('publish' !== $new_status || !($post instanceof WP_Post)
+        || 'page' !== $post->post_type
+        || !in_array($post->post_name, array('abbonamenti', 'formule'), true)) {
+        return;
+    }
+    wp_update_post(array('ID' => (int) $post->ID, 'post_status' => 'draft'));
+}
+add_action('transition_post_status', 'bodyenergy_memberships_prevent_scheduled_publish', 1, 3);
+
+/** IDs da escludere; gli editor autorizzati conservano l'accesso REST. */
+function bodyenergy_memberships_excluded_ids($respect_edit_permissions = false)
+{
+    $ids = array();
+    foreach (bodyenergy_memberships_private_pages() as $page) {
+        if ($respect_edit_permissions && current_user_can('edit_post', $page->ID)) {
+            continue;
+        }
+        $ids[] = (int) $page->ID;
+    }
+    return $ids;
+}
+
+/** WP_Query non combina post__in e post__not_in: filtrare anche include. */
+function bodyenergy_memberships_exclude_from_args($args, $ids)
+{
+    if (!$ids) {
+        return $args;
+    }
+    $args['post__not_in'] = array_values(array_unique(array_merge(
+        (array) ($args['post__not_in'] ?? array()), $ids
+    )));
+    if (!empty($args['post__in'])) {
+        $included = array_values(array_diff((array) $args['post__in'], $ids));
+        $args['post__in'] = $included ?: array(0);
+    }
+    return $args;
+}
+
+function bodyenergy_memberships_filter_rest_query($args)
+{
+    return bodyenergy_memberships_exclude_from_args($args, bodyenergy_memberships_excluded_ids(true));
+}
+add_filter('rest_page_query', 'bodyenergy_memberships_filter_rest_query', 99);
+add_filter('rest_post_search_query', 'bodyenergy_memberships_filter_rest_query', 99);
+
+/** Evita l'esposizione tramite endpoint individuali REST di WordPress. */
+function bodyenergy_memberships_block_rest_page($result, $server, $request)
+{
+    if (!preg_match('~^/wp/v2/pages/([0-9]+)(?:/|$)~', $request->get_route(), $matches)) {
+        return $result;
+    }
+    if (in_array((int) $matches[1], bodyenergy_memberships_excluded_ids(true), true)) {
+        return new WP_Error('rest_post_invalid_id', 'Pagina non disponibile.', array('status' => 404));
+    }
+    return $result;
+}
+add_filter('rest_pre_dispatch', 'bodyenergy_memberships_block_rest_page', 99, 3);
+
+/** Sitemap nativa: non includere le pagine economiche, anche se pubblicate per errore. */
+function bodyenergy_memberships_filter_sitemap($args, $post_type)
+{
+    return 'page' === $post_type
+        ? bodyenergy_memberships_exclude_from_args($args, bodyenergy_memberships_excluded_ids())
+        : $args;
+}
+add_filter('wp_sitemaps_posts_query_args', 'bodyenergy_memberships_filter_sitemap', 99, 2);
+
+/** Esclude le pagine riservate da ricerca e feed pubblici nativi. */
+function bodyenergy_memberships_filter_public_queries($query)
+{
+    if (is_admin() || (!$query->is_search() && !$query->is_feed())) {
+        return;
+    }
+    $ids = bodyenergy_memberships_excluded_ids();
+    if (!$ids) {
+        return;
+    }
+    $args = bodyenergy_memberships_exclude_from_args(array(
+        'post__in' => $query->get('post__in'),
+        'post__not_in' => $query->get('post__not_in'),
+    ), $ids);
+    foreach ($args as $key => $value) {
+        $query->set($key, $value);
+    }
+}
+add_action('pre_get_posts', 'bodyenergy_memberships_filter_public_queries', 99);
 
 /**
  * Riconosce una voce pubblica riferita a formule/abbonamenti.
@@ -117,6 +234,7 @@ function bodyenergy_block_public_memberships_pages()
         ? get_permalink($contacts)
         : home_url('/');
 
+    nocache_headers();
     wp_safe_redirect((string) $target, 302);
     exit;
 }

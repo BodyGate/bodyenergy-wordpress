@@ -12,7 +12,7 @@ if (!defined('ABSPATH')) {
  */
 function bodyenergy_register_home_video_admin_page()
 {
-    add_submenu_page(
+    $GLOBALS['bodyenergy_home_video_admin_hook'] = add_submenu_page(
         'bodyenergy-bodygate',
         'Video Hero Home Platinum',
         'Video Hero Home',
@@ -30,7 +30,8 @@ add_action('admin_menu', 'bodyenergy_register_home_video_admin_page', 20);
  */
 function bodyenergy_home_video_admin_assets($hook_suffix)
 {
-    if ('body-energy_page_bodyenergy-home-video' !== $hook_suffix) {
+    if (empty($GLOBALS['bodyenergy_home_video_admin_hook'])
+        || $GLOBALS['bodyenergy_home_video_admin_hook'] !== $hook_suffix) {
         return;
     }
 
@@ -62,6 +63,10 @@ function bodyenergy_handle_home_video_admin_save()
             'updated' => 'removed',
         ), admin_url('admin.php')));
         exit;
+    }
+
+    if ('save' !== $action) {
+        return;
     }
 
     $attachment_id = isset($_POST['bodyenergy_home_platinum_video_id'])
@@ -107,17 +112,20 @@ function bodyenergy_render_home_video_admin_page()
             <div>
                 <p class="bodyenergy-video-eyebrow">HOME BODY ENERGY PLATINUM</p>
                 <h1>Video Hero della Home</h1>
-                <p>Seleziona direttamente dalla Libreria Media il video già caricato su WordPress. La scelta viene applicata alla card destra dell’Hero della pagina in staging.</p>
+                <p>Seleziona dalla Libreria Media un video VideoPress compatibile. La scelta viene applicata alla card destra dell’Hero Platinum. In assenza di una selezione valida resta il video originale.</p>
             </div>
             <span class="bodyenergy-video-version">Plugin <?php echo esc_html(BODYENERGY_WORDPRESS_VERSION); ?></span>
         </div>
 
+        <?php if ($attachment_id && !is_array($selected_video)) : ?>
+            <div class="notice notice-warning"><p>La selezione salvata non è compatibile: la Home mantiene il video originale. Seleziona un video VideoPress oppure rimuovi la selezione.</p></div>
+        <?php endif; ?>
         <?php if ('saved' === $status) : ?>
             <div class="notice notice-success is-dismissible"><p><strong>Video salvato.</strong> Aggiorna l’anteprima della Home per verificarlo.</p></div>
         <?php elseif ('removed' === $status) : ?>
-            <div class="notice notice-warning is-dismissible"><p>Selezione rimossa. La Home userà nuovamente il rilevamento automatico.</p></div>
+            <div class="notice notice-warning is-dismissible"><p>Selezione rimossa. La Home userà il video originale.</p></div>
         <?php elseif ('invalid' === $status) : ?>
-            <div class="notice notice-error is-dismissible"><p>Il file scelto non è stato riconosciuto come video valido.</p></div>
+            <div class="notice notice-error is-dismissible"><p>Il file non è un video VideoPress compatibile con il player attuale. La selezione precedente non è stata modificata.</p></div>
         <?php endif; ?>
 
         <div class="bodyenergy-video-panel">
@@ -133,7 +141,7 @@ function bodyenergy_render_home_video_admin_page()
 
                     <div class="bodyenergy-video-actions">
                         <button type="button" class="button button-primary button-hero" id="bodyenergy-select-video">Seleziona dalla Libreria Media</button>
-                        <button type="submit" class="button button-secondary button-hero" id="bodyenergy-save-video" <?php disabled(!$attachment_id); ?>>Salva e usa nella Home</button>
+                        <button type="submit" class="button button-secondary button-hero" id="bodyenergy-save-video" <?php disabled(!is_array($selected_video)); ?>>Salva e usa nella Home</button>
                     </div>
                 </form>
 
